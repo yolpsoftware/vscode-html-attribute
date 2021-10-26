@@ -10,14 +10,21 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:vscode-html-attribute.helloWorld"
+        "onCommand:vscode-html-attribute.insertAltFromClipboard"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "vscode-html-attribute.helloWorld",
-				"title": "Hello World"
+				"command": "vscode-html-attribute.insertAltFromClipboard",
+				"title": "Insert alt attribute from clipboard"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "vscode-html-attribute.insertAltFromClipboard",
+				"key": "alt+shift+.",
+				"when": "editorTextFocus"
 			}
 		]
 	},

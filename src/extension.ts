@@ -20,11 +20,12 @@ const closeSelections = async (textEditor: vscode.TextEditor, edit: vscode.TextE
     await Promise.all(textEditor.selections.map(async selection => {
         const startLine = selection.start.line;
         const startCharacter = selection.start.character;
-        const altText = await vscode.env.clipboard.readText();
+        let altText = await vscode.env.clipboard.readText();
         if (!altText) {
             vscode.window.showWarningMessage('No text in clipboard');
             return;
         }
+        altText = altText.replace(/"/g, '\\"');
         const lineText = textEditor.document.getText(new vscode.Range(startLine, 0, startLine, textEditor.document.lineAt(startLine).range.end.character));
         const index = lineText.indexOf('<img');
         if (index === -1) {
@@ -36,33 +37,13 @@ const closeSelections = async (textEditor: vscode.TextEditor, edit: vscode.TextE
             return;
         }
         const srcIndex = lineText.indexOf('src="', index);
-        if (srcIndex === -1) {
-            // append at end of line
-            await edit.insert(new vscode.Position(startLine, lineText.length - 1), ` alt="${altText}"`);
-        } else {
-            const srcEndIndex = lineText.indexOf('"', srcIndex + 5);
-            await edit.insert(new vscode.Position(startLine, srcEndIndex), ` alt="${altText}"`);
-        }
-
-        //vscode.workspace.applyEdit(edit);
-        /*const tagToClose = findTags(() => {
-            if (startLine < 0) {
-                return;
-            } else {
-                const line = getLineText(textEditor, startLine--, startCharacter);
-                startCharacter = Infinity;
-                return line;
-            }
-        }, { ignoreTags });
-        if (tagToClose) {
-            const closeTag = `</${ tagToClose }>`;
-
-            if (selection.start.line !== selection.end.line || selection.start.character !== selection.end.character) {
-                edit.replace(selection, closeTag);
-            } else {
-                edit.insert(selection.anchor, closeTag);
-            }
-        }*/
+        const srcEndIndex = lineText.indexOf('"', srcIndex + 5) + 1;
+        const pos = srcIndex === -1 ? new vscode.Position(startLine, lineText.length - 1) : new vscode.Position(startLine, srcEndIndex);
+        textEditor.edit((edit) => {
+            edit.insert(pos, ` alt="${altText}"`);
+        })
+        textEditor.selection = new vscode.Selection(pos.line, pos.character, pos.line, pos.character);
+        vscode.window.showInformationMessage('Added alt attribute.');
     }));
 }
 

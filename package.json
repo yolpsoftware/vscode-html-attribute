@@ -10,7 +10,9 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:vscode-html-attribute.insertAltFromClipboard"
+        "onCommand:vscode-html-attribute.insertAltFromClipboard",
+		"onCommand:vscode-html-attribute.goToNextImgTag",
+		"onCommand:vscode-html-attribute.goToPrevImgTag"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -18,6 +20,14 @@
 			{
 				"command": "vscode-html-attribute.insertAltFromClipboard",
 				"title": "Insert alt attribute from clipboard"
+			},
+			{
+				"command": "vscode-html-attribute.goToNextImgTag",
+				"title": "Jump to next img tag"
+			},
+			{
+				"command": "vscode-html-attribute.goToPrevImgTag",
+				"title": "Jump to previous img tag"
 			}
 		],
 		"keybindings": [
@@ -25,8 +35,19 @@
 				"command": "vscode-html-attribute.insertAltFromClipboard",
 				"key": "alt+shift+.",
 				"when": "editorTextFocus"
+			},
+			{
+				"command": "vscode-html-attribute.goToNextImgTag",
+				"key": "alt+shift+/",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "vscode-html-attribute.goToPrevImgTag",
+				"key": "alt+shift+,",
+				"when": "editorTextFocus"
 			}
 		]
+		
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
